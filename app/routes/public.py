@@ -12,20 +12,35 @@ public_routes = Blueprint('public_routes', __name__)
 
 
 # 🎯 save contact message
-
 @public_routes.route('/contact', methods=['POST'])
 def contact():
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    messages_collection.insert_one({
-        "name": data.get("name"),
-        "email": data.get("email"),
-        "message": data.get("message"),
-        "created_at": datetime.utcnow(),
-        "is_read": False
-    })
+        if not data:   # ✅ FIX 2
+            return jsonify({
+                "success": False,
+                "message": "No JSON data received"
+            }), 400
 
-    return jsonify({"success": True}), 201
+        messages_collection.insert_one({
+            "name": data.get("name"),
+            "email": data.get("email"),
+            "message": data.get("message"),
+            "created_at": datetime.utcnow(),
+            "is_read": False
+        })
+
+        return jsonify({
+            "success": True,
+            "message": "Message sent successfully"
+        }), 201
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
 
 
 # 🎯 get projects
