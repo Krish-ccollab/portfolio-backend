@@ -2,6 +2,7 @@ from pymongo import MongoClient
 
 MONGO_URI = "mongodb+srv://krishM:Krish1599@portfollio.u1gr6ih.mongodb.net/portfolio"
 
+
 client = MongoClient(
     MONGO_URI,
     tls=True,
