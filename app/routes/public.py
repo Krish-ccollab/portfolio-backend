@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from bson.objectid import ObjectId
+from datetime import datetime
 from app.db import (
     get_db_connection,
     messages_collection,
@@ -17,12 +18,6 @@ def contact():
     try:
         data = request.get_json()
 
-        if not data:   # ✅ FIX 2
-            return jsonify({
-                "success": False,
-                "message": "No JSON data received"
-            }), 400
-
         messages_collection.insert_one({
             "name": data.get("name"),
             "email": data.get("email"),
@@ -31,16 +26,12 @@ def contact():
             "is_read": False
         })
 
-        return jsonify({
-            "success": True,
-            "message": "Message sent successfully"
-        }), 201
+        return jsonify({"success": True}), 201
 
     except Exception as e:
-        return jsonify({
-            "success": False,
-            "error": str(e)
-        }), 500
+        print("CONTACT ERROR:", e)
+        return jsonify({"success": False, "error": "Server error"}), 500
+
 
 
 # 🎯 get projects
